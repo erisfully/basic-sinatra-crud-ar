@@ -6,7 +6,13 @@
       <h1><%= name %>'s Fish</h1>
       <ul class="lists">
         <% fish.each do |fishie| %>
-          <li><a class = "lists" href="en.wikipedia.org/wiki/<%= fishie["name"] %>"><%=fishie["name"] %></a></li>
+          <li>
+            <a class = "lists" href="en.wikipedia.org/wiki/<%= fishie["name"] %>">
+              <%=fishie["name"] %>
+            </a>
+            <form method="post" action="/fav_<%= fishie["id"] %>">
+              <button id="<%= fishie["name"] %>" name="<%= fav %>"><%= fav %></button>
+          </li>
         <% end %>
       </ul>
     </div>

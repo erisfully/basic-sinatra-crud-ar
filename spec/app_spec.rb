@@ -127,10 +127,10 @@ feature "Fish" do
     click_button("Login")
 
     click_button("Create Fish")
-    fill_in("fish_name", :with => "Goldfish")
+    fill_in("fish_name", :with => "Halibut")
     click_button("Create")
 
-    expect(page).to have_link("Goldfish")
+    expect(page).to have_link("Halibut")
   end
 end
 
@@ -142,8 +142,18 @@ feature "User Page" do
     fill_in("password", :with => "123")
     click_button("Login")
     click_link("Ian")
+
+    expect(page).to have_content("Halibut")
     save_and_open_page
-    expect(page).to have_content("Goldfish")
+
+    click_button("Halibut")
+
+    expect(page).to have_content("Favorited")
+    save_and_open_page
+
+    click_button("Halibut")
   end
 end
+
+
 

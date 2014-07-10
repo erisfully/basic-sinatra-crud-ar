@@ -68,8 +68,35 @@ class App < Sinatra::Application
 
   get "/:author" do
     id = params[:author].to_i
-    erb :user, :locals => {:name => get_name(id), :fish => display_fish(id)}
+    if is_fav(session[:id])
+      fav = "Favorited"
+    else
+      fav = "Favorite"
+    end
+    erb :user, :locals => {
+      :name => get_name(id),
+      :fish => display_fish(id),
+      :fav => fav
+      }
+  end
 
+  post "/fav_:id" do
+    fish_id = params[:id]
+    user_id = session[:id]
+    fish_name = fish_name(fish_id)
+    user_name = get_name(user_id)
+    if params[:Favorite]
+      @database_connection.sql(
+        "INSERT INTO fav (fish_name, fish_id, user_name, user_id)
+        VALUES ('#{fish_name}', '#{fish_id}', '#{user_name}',
+        '#{user_id}')"
+        )
+    elsif params[:Favorited]
+      @database_connection.sql(
+        "DELETE from fav where fish_id=#{fish_id} and user_id=#{user_id}"
+      )
+      end
+    redirect back
   end
 
   private
@@ -87,7 +114,7 @@ class App < Sinatra::Application
       elsif password == ''
         flash[:notice] = "Password is required"
       end
-      redirect "/register"
+      redirect back
     else
       flash[:notice]= "Thank you for registering"
       redirect "/"
@@ -95,15 +122,22 @@ class App < Sinatra::Application
   end
 
   def display_users(username)
-    @database_connection.sql("SELECT * FROM users where username <> '#{username}'")
+    @database_connection.sql(
+      "SELECT * FROM users where username <> '#{username}'"
+    )
   end
 
   def display_sort(username)
-    @database_connection.sql("SELECT * FROM users where username <> '#{username}' order by username")
+    @database_connection.sql(
+      "SELECT * FROM users where username <> '#{username}'
+      order by username"
+      )
   end
 
   def get_name(id)
-    @database_connection.sql("SELECT username FROM users where id = #{id}")[0]["username"]
+    @database_connection.sql(
+      "SELECT username FROM users where id = #{id}"
+      )[0]["username"]
   end
 
   def display_fish(id)
@@ -112,6 +146,24 @@ class App < Sinatra::Application
       inner join users on fish.author = users.id
       where author = #{id}")
   end
+
+  def fish_name(id)
+    @database_connection.sql(
+      "SELECT name FROM fish where id = #{id}"
+      )[0]["name"]
+  end
+
+  def is_fav(id)
+    fav = @database_connection.sql(
+      "SELECT fish_name FROM fav where user_id = #{id}"
+      )
+    if fav != []
+      true
+    else
+      false
+    end
+  end
+
 end
 
 
