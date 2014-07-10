@@ -1,0 +1,17 @@
+<section class="clearfix">
+  <article class="one_fourth">
+  </article>
+  <article class="one_half">
+    <div class="one_half">
+      <h1><%= name %>'s Fish</h1>
+      <ul class="lists">
+        <% fish.each do |fishie| %>
+          <li><a class = "lists" href="<%= fishie[:wiki] %>"><%=fishie[:name] %></a></li>
+        <% end %>
+      </ul>
+    </div>
+  </article>
+  <article class="one_fourth">
+
+  </article>
+</section>

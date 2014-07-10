@@ -1,0 +1,19 @@
+<div class="one_half">
+  <div id="flash">
+    <% if flash[:notice] %>
+      <p><%= flash[:notice] %></p>
+    <% end %>
+  </div>
+  <form method="get" action="/register">
+    <button type="submit" class="button" name="register">Register</button>
+  </form>
+  <form method="post" action="/">
+    <ul class="nodots">
+      <li><label class="names" for="username">Username:</label></li>
+      <li><input type="text" name="username" id="username" class="names"/></li>
+      <li><label class="names" for="password">Password:</label></li>
+      <li><input type="password" name="password" id="password" class="names"/></li>
+    </ul>
+    <button type="submit" class="loginbutton">Login</button>
+  </form>
+</div>
