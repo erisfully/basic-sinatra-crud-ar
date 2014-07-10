@@ -1,7 +1,12 @@
   <h1>Welcome, <%= cur_user %>!</h1>
-  <form method="get" action="/logout">
+  <ul><% list.each do |name| %>
+     <li><%= name["username"] %></li>
+    <% end %>
+    </ul>
+  <form method="get" action="/">
+    <button type = "submit" name = "sort">Sort</button>
+   </form>
+    <form method="get" action="/logout">
   <button>Logout</button>
   </form>
-
-
 

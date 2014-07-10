@@ -71,6 +71,24 @@ feature "Homepage" do
   feature "Homepage shows user list" do
     scenario "user logs in, sees user list" do
 
+      visit "/"
+
+      fill_in("username", :with => "Ian")
+      fill_in("password", :with => "123")
+
+      click_button("Login")
+
+
+
+      expect(page).to have_content("Jeff", "Bob", "Weclome, Ian!")
+      expect(page).to_not have_content("Jeff Ian")
+
+      click_button("Sort")
+
+      save_and_open_page
+
+      expect(page).to have_content("Ash Bob Jeff")
+
     end
   end
 end

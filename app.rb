@@ -15,9 +15,13 @@ class App < Sinatra::Application
 
   get "/" do
     if session[:id]
-      erb :loggedout
       cur = @database_connection.sql("SELECT username FROM users WHERE id = #{session[:id]}")[0]["username"]
-      erb :loggedin, :locals => {:cur_user => cur}
+        if params[:sort]
+          username_list = @database_connection.sql("SELECT username FROM users WHERE username <> '#{cur}' ORDER BY username ASC")
+       else
+        username_list = @database_connection.sql("SELECT username FROM users WHERE username <> '#{cur}'")
+        end
+      erb :loggedin, :locals => {:cur_user => cur, :list => username_list}
     else
       erb :loggedout
     end
