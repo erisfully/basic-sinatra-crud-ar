@@ -1,7 +1,39 @@
-  <h1>Welcome, <%= cur_user %>!</h1>
-  <form method="get" action="/logout">
+<h1>Welcome, <%= cur_user %>!</h1>
+<form method="get" action="/logout">
   <button>Logout</button>
-  </form>
+</form>
+<form action="/new_fish" method="get">
+  <label for="create_fish" name="create_fish"></label>
+  <button type="submit" class="loginbutton">Create Fish</button>
+</form>
 
+<div id="flash">
+  <% if flash[:notice] %>
+    <p><%= flash[:notice] %></p>
+  <% end %>
+</div>
+<h1>Users: </h1>
+<form method="get" action="/">
+  <button name="sorted">Sort</button>
+</form>
+<ul>
+  <% users.each do |user| %>
+    <li><a href="/<%= user["id"] %>" id="<%= user["username"] %>"><%= user["username"] %></a></li>
+    <form method="post" action="/<%= user["id"] %>">
+      <input type="hidden" name="_method" value="delete"/>
+      <input type="submit" value="Delete <%= user["username"] %>"/>
+    </form>
+    </li>
+  <% end %>
+</ul>
 
-
+<h1>Fish: </h1>
+<ul class="lists">
+  <% fish.each do |fishie| %>
+    <li><a class="lists" href="en.wikipedia.org/wiki/<%= fishie["name"] %>"><%= fishie["name"] %></a></li>
+    <form method="post" action="/fish/<%= fishie["id"] %>">
+      <input type="hidden" name="_method" value="delete"/>
+      <input type="submit" name="delete" value="Delete"/>
+    </form>
+  <% end %>
+</ul>

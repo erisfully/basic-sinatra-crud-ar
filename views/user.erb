@@ -6,7 +6,7 @@
       <h1><%= name %>'s Fish</h1>
       <ul class="lists">
         <% fish.each do |fishie| %>
-          <li><a class = "lists" href="<%= fishie[:wiki] %>"><%=fishie[:name] %></a></li>
+          <li><a class = "lists" href="en.wikipedia.org/wiki/<%= fishie["name"] %>"><%=fishie["name"] %></a></li>
         <% end %>
       </ul>
     </div>

@@ -1,20 +1,20 @@
-
 <article class="one_half">
 
   <form method="post" action="/register">
     <ul class="nodots">
       <li>
         <label class="names" for="username">username </label>
-        <input class = "names" type="text" name="username" id="username"/>
+        <input class="names" type="text" name="username" id="username"/>
       </li>
       <li>
         <label class="names" for="password">Password: </label>
-        <input class = "names" type="password" name="password" id="password"/>
+        <input class="names" type="password" name="password" id="password"/>
       </li>
     </ul>
     <button class="loginbutton" type="submit">Submit</button>
 
-    <div class = "red"><% if flash[:notice] %>
+    <div class="red">
+      <% if flash[:notice] %>
         <p><%= flash[:notice] %></p>
       <% end %>
     </div>

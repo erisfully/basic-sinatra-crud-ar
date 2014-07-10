@@ -15,9 +15,13 @@ class App < Sinatra::Application
 
   get "/" do
     if session[:id]
-      erb :loggedout
       cur = @database_connection.sql("SELECT username FROM users WHERE id = #{session[:id]}")[0]["username"]
-      erb :loggedin, :locals => {:cur_user => cur}
+      if params[:sorted]
+        display = display_sort(cur)
+      else
+        display = display_users(cur)
+      end
+      erb :loggedin, :locals => {:cur_user => cur, :users => display, :fish => display_fish(session[:id])}
     else
       erb :loggedout
     end
@@ -42,34 +46,74 @@ class App < Sinatra::Application
     redirect "/"
   end
 
+  delete "/:id" do
+    name = get_name(params[:id])
+    flash[:notice] = "#{name} deleted"
+    @database_connection.sql("DELETE from users WHERE id = #{params[:id]}")
+    redirect "/"
+  end
+
+  get "/new_fish" do
+    erb :new_fish
+  end
+
+  post "/new_fish" do
+    @database_connection.sql(
+      "INSERT INTO fish (name, author) VALUES
+      ('#{params[:fish_name]}',
+      '#{session[:id]}')"
+      )
+    redirect "/"
+  end
+
+  get "/:author" do
+    id = params[:author].to_i
+    erb :user, :locals => {:name => get_name(id), :fish => display_fish(id)}
+
+  end
 
   private
 
   def check_register(username, password)
-
     begin
       @database_connection.sql("INSERT INTO users (username, password) VALUES ('#{username}', '#{password}')")
     rescue => e
-      if password == '' && username == ''
+      if e.message.include?("userexists")
+        flash[:notice] = "Username already exists"
+      elsif password == '' && username == ''
         flash[:notice] = "Username and password are required"
-        redirect "/register"
       elsif username == ''
         flash[:notice] = "Username is required"
-        redirect "/register"
       elsif password == ''
         flash[:notice] = "Password is required"
-        redirect "/register"
-      elsif e.message.include?("userexists")
-      flash[:notice] = "Username already exists"
-      redirect "/register"
       end
+      redirect "/register"
     else
       flash[:notice]= "Thank you for registering"
       redirect "/"
     end
   end
 
+  def display_users(username)
+    @database_connection.sql("SELECT * FROM users where username <> '#{username}'")
+  end
+
+  def display_sort(username)
+    @database_connection.sql("SELECT * FROM users where username <> '#{username}' order by username")
+  end
+
+  def get_name(id)
+    @database_connection.sql("SELECT username FROM users where id = #{id}")[0]["username"]
+  end
+
+  def display_fish(id)
+    @database_connection.sql(
+      "SELECT fish.name, fish.id FROM fish
+      inner join users on fish.author = users.id
+      where author = #{id}")
+  end
 end
+
 
 
 
