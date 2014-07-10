@@ -4,9 +4,13 @@ class CreateUsers < ActiveRecord::Migration
       t.string :username
       t.string :password
     end
+    create_table :fish do |t|
+      t.string :fishname
+      t.string :link
+    end
   end
-
   def down
     drop_table :users
+    drop_table :fish
   end
 end

@@ -16,21 +16,32 @@ class App < Sinatra::Application
   get "/" do
     if session[:id]
       cur = @database_connection.sql("SELECT username FROM users WHERE id = #{session[:id]}")[0]["username"]
+      fish_list = @database_connection.sql("SELECT fishname, link FROM fish")
         if params[:sort]
           username_list = @database_connection.sql("SELECT username FROM users WHERE username <> '#{cur}' ORDER BY username ASC")
        else
         username_list = @database_connection.sql("SELECT username FROM users WHERE username <> '#{cur}'")
         end
-      erb :loggedin, :locals => {:cur_user => cur, :list => username_list}
+      erb :loggedin, :locals => {:cur_user => cur, :list => username_list, :fish => fish_list}
     else
       erb :loggedout
     end
+  end
+
+  delete "/" do
+    @database_connection.sql("DELETE FROM users WHERE username = '#{params[:delete]}'")
+    redirect "/"
   end
 
   post "/" do
     id = @database_connection.sql("SELECT id FROM users WHERE username = '#{params[:username]}'").last["id"]
     session[:id] = id
     redirect "/"
+  end
+
+  post "/fish" do
+    @database_connection.sql("INSERT INTO fish (fishname, link) VALUES ('#{params[:create_fish]}', '#{params[:fish_link]}')")
+    redirect"/"
   end
 
   post "/register" do
