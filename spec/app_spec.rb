@@ -49,90 +49,84 @@ feature "Homepage" do
 
     click_button("Submit")
     expect(page).to have_content("Username and password are required")
-
-  end
-
-  feature "Registration" do
-    scenario "User cannot register with existing username" do
-      visit "/register"
-
-      fill_in("username", :with => "Ian")
-      fill_in("password", :with => "kdkekfijef")
-
-      click_button("Submit")
-
-      visit "/register"
-
-      fill_in("username", :with => "Ian")
-      fill_in("password", :with => "kdkekfijef")
-
-      click_button("Submit")
-      expect(page).to have_content("Username already exists")
-
-    end
-  end
-
-  feature "Homepage shows user list" do
-    scenario "user logs in, sees user list" do
-      visit "/register"
-
-      fill_in("username", :with => "Jeff")
-      fill_in("password", :with => "123")
-
-      click_button("Submit")
-
-      visit "/register"
-
-      fill_in("username", :with => "Ash")
-      fill_in("password", :with => "123")
-
-      click_button("Submit")
-
-      visit "/register"
-
-      fill_in("username", :with => "Bob")
-      fill_in("password", :with => "123")
-
-      click_button("Submit")
-
-      visit "/register"
-
-      fill_in("username", :with => "Ian")
-      fill_in("password", :with => "123")
-
-
-      click_button("Submit")
-
-      visit "/"
-
-      fill_in("username", :with => "Ian")
-      fill_in("password", :with => "123")
-
-      click_button("Login")
-
-      save_and_open_page
-
-      expect(page).to have_content("Jeff", "Bob", "Weclome, Ian!")
-      expect(page).to_not have_content("Jeff Ian")
-
-      click_button("Sort")
-
-      expect(page).to have_content("Ash Bob Jeff")
-
-      fill_in("delete", :with => "Jeff")
-      click_button("Delete")
-
-      expect(page).to_not have_content("Jeff")
-      expect(page).to have_content "Welcome, Ian!"
-
-      fill_in("create_fish", :with => "Goldfish")
-      fill_in("fish_link", :with => "http://en.wikipedia.org/wiki/Goldfish")
-
-      click_button("Create Fish")
-
-      save_and_open_page
-      expect(page).to have_content("Welcome, Ian!", "Goldfish")
-      expect(page).to have_link("Wiki", :href => "http://en.wikipedia.org/wiki/Goldfish")
-    end
   end
 end
+
+feature "Registration" do
+  scenario "User cannot register with existing username" do
+    visit "/register"
+
+    fill_in("username", :with => "Ian")
+    fill_in("password", :with => "kdkekfijef")
+
+    click_button("Submit")
+
+    visit "/register"
+
+    fill_in("username", :with => "Ian")
+    fill_in("password", :with => "kdkekfijef")
+
+    click_button("Submit")
+    expect(page).to have_content("Username already exists")
+  end
+end
+
+feature "Homepage shows user list" do
+  scenario "user logs in, sees user list" do
+    visit "/register"
+
+    fill_in("username", :with => "Jeff")
+    fill_in("password", :with => "123")
+
+    click_button("Submit")
+
+    visit "/register"
+
+    fill_in("username", :with => "Ash")
+    fill_in("password", :with => "123")
+
+    click_button("Submit")
+
+    visit "/register"
+
+    fill_in("username", :with => "Bob")
+    fill_in("password", :with => "123")
+
+    click_button("Submit")
+
+    visit "/register"
+
+    fill_in("username", :with => "Ian")
+    fill_in("password", :with => "123")
+
+
+    click_button("Submit")
+
+    visit "/"
+
+    fill_in("username", :with => "Ian")
+    fill_in("password", :with => "123")
+
+    click_button("Login")
+
+    expect(page).to have_content("Jeff", "Bob", "Weclome, Ian!")
+    expect(page).to_not have_content("Jeff Ian")
+
+    click_button("Sort")
+
+    expect(page).to have_content("Ash Bob Jeff")
+
+    fill_in("delete", :with => "Jeff")
+    click_button("Delete")
+
+    expect(page).to_not have_content("Jeff")
+    expect(page).to have_content "Welcome, Ian!"
+
+    fill_in("create_fish", :with => "Goldfish")
+
+    click_button("Create Fish")
+    expect(page).to have_content("Welcome, Ian!", "Goldfish")
+    expect(page).to have_link("Wiki", :href => "http://en.wikipedia.org/wiki/Goldfish")
+  end
+end
+

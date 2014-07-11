@@ -21,12 +21,11 @@
    <form method="post" action="/fish">
      <label for="fish">Create fish: </label>
      <input type="text" name="create_fish" id="create_fish" placeholder="fish"/>
-     <input type="text" name="fish_link" id="fish_link" placeholder="wikipedia page"/>
      <button type="submit">Create Fish</button>
    </form>
 
   <ul><% fish.each do |fish| %>
-      <li><%=fish["fishname"] + " - " %> <a href="<%fish["link"]%>">Wiki</a></li>
+      <li><%=fish["fishname"] + " - " %> <a href="http://en.wikipedia.org/wiki/<%=fish["fishname"]%>">Wiki</a></li>
     <% end %>
   </ul>
 

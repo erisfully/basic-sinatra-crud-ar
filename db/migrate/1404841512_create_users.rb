@@ -6,7 +6,6 @@ class CreateUsers < ActiveRecord::Migration
     end
     create_table :fish do |t|
       t.string :fishname
-      t.string :link
     end
   end
   def down

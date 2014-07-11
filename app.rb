@@ -17,11 +17,11 @@ class App < Sinatra::Application
     if session[:id]
       cur = @database_connection.sql("SELECT username FROM users WHERE id = #{session[:id]}")[0]["username"]
       fish_list = @database_connection.sql("SELECT fishname, link FROM fish")
-        if params[:sort]
-          username_list = @database_connection.sql("SELECT username FROM users WHERE username <> '#{cur}' ORDER BY username ASC")
-       else
+      if params[:sort]
+        username_list = @database_connection.sql("SELECT username FROM users WHERE username <> '#{cur}' ORDER BY username ASC")
+      else
         username_list = @database_connection.sql("SELECT username FROM users WHERE username <> '#{cur}'")
-        end
+      end
       erb :loggedin, :locals => {:cur_user => cur, :list => username_list, :fish => fish_list}
     else
       erb :loggedout
@@ -40,8 +40,8 @@ class App < Sinatra::Application
   end
 
   post "/fish" do
-    @database_connection.sql("INSERT INTO fish (fishname, link) VALUES ('#{params[:create_fish]}', '#{params[:fish_link]}')")
-    redirect"/"
+    @database_connection.sql("INSERT INTO fish (fishname) VALUES ('#{params[:create_fish]}')")
+    redirect "/"
   end
 
   post "/register" do
@@ -62,28 +62,30 @@ class App < Sinatra::Application
 
   def check_register(username, password)
 
-    begin
-      @database_connection.sql("INSERT INTO users (username, password) VALUES ('#{username}', '#{password}')")
-    rescue => e
-      if password == '' && username == ''
-        flash[:notice] = "Username and password are required"
-        redirect "/register"
-      elsif username == ''
-        flash[:notice] = "Username is required"
-        redirect "/register"
-      elsif password == ''
-        flash[:notice] = "Password is required"
-        redirect "/register"
-      elsif e.message.include?("userexists")
+    if user_exists(username) != []
       flash[:notice] = "Username already exists"
       redirect "/register"
-      end
+    elsif password == '' && username == ''
+      flash[:notice] = "Username and password are required"
+      redirect "/register"
+    elsif username == ''
+      flash[:notice] = "Username is required"
+      redirect "/register"
+    elsif password == ''
+      flash[:notice] = "Password is required"
+      redirect "/register"
     else
+      @database_connection.sql(
+       "INSERT INTO users (username, password) VALUES ('#{username}', '#{password}')"
+      )
       flash[:notice]= "Thank you for registering"
       redirect "/"
     end
   end
 
+  def user_exists(username)
+    @database_connection.sql("SELECT username from users where username = '#{username}'")
+  end
 end
 
 
